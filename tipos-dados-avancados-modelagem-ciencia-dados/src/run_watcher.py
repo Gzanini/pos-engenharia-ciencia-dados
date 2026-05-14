@@ -1,5 +1,5 @@
-from etl_core import run_loop
+from etl_core import executar_em_loop
 
 if __name__ == "__main__":
-    # Runs ETL in continuous mode to process new files periodically.
-    run_loop(sleep_seconds=30)
+    # Executa ETL em modo continuo para processar novos arquivos periodicamente.
+    executar_em_loop(sleep_seconds=30)

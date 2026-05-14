@@ -1,4 +1,4 @@
-﻿"""Core ETL functions for FS mix pipeline."""
+﻿"""Funcoes centrais de ETL para o pipeline de mix de produtos."""
 
 from __future__ import annotations
 
@@ -17,9 +17,9 @@ from sqlalchemy import create_engine, text
 from sqlalchemy.engine import Engine
 
 
-# Purpose: Estrutura o retorno do processamento de um arquivo.
+# Finalidade: Estrutura o retorno do processamento de um arquivo.
 @dataclass
-class EtlResult:
+class ResultadoEtl:
     file_name: str
     file_type: str
     rows_loaded: int
@@ -27,28 +27,28 @@ class EtlResult:
     error_message: str = ""
 
 
-# Purpose: Le variaveis de ambiente com valor padrao.
-def _env(name: str, default: str = "") -> str:
+# Finalidade: Le variaveis de ambiente com valor padrao.
+def _ler_variavel_ambiente(name: str, default: str = "") -> str:
     return os.getenv(name, default)
 
 
-# Purpose: Monta a string de conexao com o PostgreSQL.
-def get_pg_conn_str() -> str:
-    host = _env("POSTGRES_HOST", "localhost")
-    port = _env("POSTGRES_PORT", "5432")
-    db = _env("POSTGRES_DB", "fs_mix")
-    user = _env("POSTGRES_USER", "fs_user")
-    pwd = _env("POSTGRES_PASSWORD", "fs_pass")
+# Finalidade: Monta a string de conexao com o PostgreSQL.
+def obter_string_conexao_postgres() -> str:
+    host = _ler_variavel_ambiente("POSTGRES_HOST", "localhost")
+    port = _ler_variavel_ambiente("POSTGRES_PORT", "5432")
+    db = _ler_variavel_ambiente("POSTGRES_DB", "fs_mix")
+    user = _ler_variavel_ambiente("POSTGRES_USER", "fs_user")
+    pwd = _ler_variavel_ambiente("POSTGRES_PASSWORD", "fs_pass")
     return f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{db}"
 
 
-# Purpose: Cria engine SQLAlchemy para acesso ao banco.
-def get_engine(conn_str: str | None = None) -> Engine:
-    return create_engine(conn_str or get_pg_conn_str(), future=True)
+# Finalidade: Cria engine SQLAlchemy para acesso ao banco.
+def obter_engine(conn_str: str | None = None) -> Engine:
+    return create_engine(conn_str or obter_string_conexao_postgres(), future=True)
 
 
-# Purpose: Calcula hash SHA-256 do arquivo para rastreabilidade.
-def _sha256_file(file_path: Path) -> str:
+# Finalidade: Calcula hash SHA-256 do arquivo para rastreabilidade.
+def _calcular_hash_arquivo(file_path: Path) -> str:
     digest = hashlib.sha256()
     with file_path.open("rb") as f:
         for chunk in iter(lambda: f.read(8192), b""):
@@ -56,14 +56,14 @@ def _sha256_file(file_path: Path) -> str:
     return digest.hexdigest()
 
 
-# Purpose: Gera hash estavel de um registro de dados.
-def _hash_record(record: Dict[str, Any]) -> str:
+# Finalidade: Gera hash estavel de um registro de dados.
+def _gerar_hash_registro(record: Dict[str, Any]) -> str:
     payload = json.dumps(record, sort_keys=True, ensure_ascii=False, default=str)
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
-# Purpose: Converte valores numericos para Decimal de forma segura.
-def _to_decimal(value: Any) -> Decimal | None:
+# Finalidade: Converte valores numericos para Decimal de forma segura.
+def _para_decimal(value: Any) -> Decimal | None:
     if value in (None, "", "null"):
         return None
     try:
@@ -72,8 +72,8 @@ def _to_decimal(value: Any) -> Decimal | None:
         return None
 
 
-# Purpose: Converte textos comuns para valores booleanos.
-def _to_bool(value: Any) -> bool | None:
+# Finalidade: Converte textos comuns para valores booleanos.
+def _para_booleano(value: Any) -> bool | None:
     if value is None or value == "":
         return None
     if isinstance(value, bool):
@@ -86,8 +86,8 @@ def _to_bool(value: Any) -> bool | None:
     return None
 
 
-# Purpose: Converte texto de data para objeto date.
-def _to_date(value: Any):
+# Finalidade: Converte texto de data para objeto date.
+def _para_data(value: Any):
     if value in (None, "", "null"):
         return None
     value = str(value).strip()
@@ -99,8 +99,8 @@ def _to_date(value: Any):
     return None
 
 
-# Purpose: Le arquivo texto com fallback de encodings.
-def _read_text(file_path: Path) -> str:
+# Finalidade: Le arquivo texto com fallback de encodings.
+def _ler_texto(file_path: Path) -> str:
     for enc in ("utf-8", "utf-8-sig", "latin-1", "cp1252"):
         try:
             return file_path.read_text(encoding=enc)
@@ -109,9 +109,9 @@ def _read_text(file_path: Path) -> str:
     return file_path.read_text(encoding="utf-8", errors="replace")
 
 
-# Purpose: Carrega registros a partir de JSON array, objeto ou JSONL.
-def parse_json_records(file_path: Path) -> List[Dict[str, Any]]:
-    text_data = _read_text(file_path).strip()
+# Finalidade: Carrega registros a partir de JSON array, objeto ou JSONL.
+def ler_registros_json(file_path: Path) -> List[Dict[str, Any]]:
+    text_data = _ler_texto(file_path).strip()
     if not text_data:
         return []
 
@@ -138,9 +138,9 @@ def parse_json_records(file_path: Path) -> List[Dict[str, Any]]:
     return records
 
 
-# Purpose: Carrega registros de CSV e normaliza campos.
-def parse_csv_records(file_path: Path) -> List[Dict[str, Any]]:
-    text_data = _read_text(file_path)
+# Finalidade: Carrega registros de CSV e normaliza campos.
+def ler_registros_csv(file_path: Path) -> List[Dict[str, Any]]:
+    text_data = _ler_texto(file_path)
     rows: List[Dict[str, Any]] = []
     reader = csv.DictReader(text_data.splitlines())
     for row in reader:
@@ -148,8 +148,8 @@ def parse_csv_records(file_path: Path) -> List[Dict[str, Any]]:
     return rows
 
 
-# Purpose: Registra status de processamento no file_registry.
-def _register_file(
+# Finalidade: Registra status de processamento no file_registry.
+def _registrar_arquivo(
     conn,
     file_name: str,
     file_hash: str,
@@ -183,11 +183,11 @@ def _register_file(
     )
 
 
-# Purpose: Carrega movimentacoes no bronze e faz upsert na fato silver.
-def _insert_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]]) -> int:
+# Finalidade: Carrega movimentacoes no bronze e faz upsert na fato silver.
+def _carregar_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]]) -> int:
     loaded = 0
     for idx, record in enumerate(records, start=1):
-        record_hash = _hash_record(record)
+        record_hash = _gerar_hash_registro(record)
 
         conn.execute(
             text(
@@ -205,11 +205,11 @@ def _insert_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]])
             },
         )
 
-        qtd_venda = _to_decimal(record.get("qtd_venda"))
-        valor_unitario = _to_decimal(record.get("valor_unitario"))
-        desconto_dig = _to_decimal(record.get("valor_desconto_digitado")) or Decimal("0")
-        desconto_prop = _to_decimal(record.get("valor_desconto_proporcional")) or Decimal("0")
-        frete_item = _to_decimal(record.get("valor_frete_item")) or Decimal("0")
+        qtd_venda = _para_decimal(record.get("qtd_venda"))
+        valor_unitario = _para_decimal(record.get("valor_unitario"))
+        desconto_dig = _para_decimal(record.get("valor_desconto_digitado")) or Decimal("0")
+        desconto_prop = _para_decimal(record.get("valor_desconto_proporcional")) or Decimal("0")
+        frete_item = _para_decimal(record.get("valor_frete_item")) or Decimal("0")
 
         valor_bruto = (qtd_venda or Decimal("0")) * (valor_unitario or Decimal("0"))
         valor_liquido = valor_bruto - desconto_dig - desconto_prop + frete_item
@@ -269,7 +269,7 @@ def _insert_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]])
                 "record_hash": record_hash,
                 "source_file": source_file,
                 "source_row": idx,
-                "data_emissao": _to_date(record.get("data_emissao")),
+                "data_emissao": _para_data(record.get("data_emissao")),
                 "id_movimentacao": str(record.get("id_movimentacao") or ""),
                 "id_produto_servico": str(record.get("id_produto_servico") or ""),
                 "id_produto_servico_empresa": str(record.get("id_produto_servico_empresa") or "") or None,
@@ -283,13 +283,13 @@ def _insert_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]])
                 "direcao_estoque": str(record.get("direcao_estoque") or "") or None,
                 "tipo_transacao": str(record.get("tipo_transacao") or "") or None,
                 "id_pessoa": str(record.get("id_pessoa") or ""),
-                "status_item_cancelado": _to_bool(record.get("status_item_cancelado")),
-                "qtd_item_movimentacao": _to_decimal(record.get("qtd_item_movimentacao")),
+                "status_item_cancelado": _para_booleano(record.get("status_item_cancelado")),
+                "qtd_item_movimentacao": _para_decimal(record.get("qtd_item_movimentacao")),
                 "qtd_venda": qtd_venda,
                 "valor_unitario": valor_unitario,
-                "valor_desconto_digitado": _to_decimal(record.get("valor_desconto_digitado")),
-                "valor_desconto_proporcional": _to_decimal(record.get("valor_desconto_proporcional")),
-                "valor_frete_item": _to_decimal(record.get("valor_frete_item")),
+                "valor_desconto_digitado": _para_decimal(record.get("valor_desconto_digitado")),
+                "valor_desconto_proporcional": _para_decimal(record.get("valor_desconto_proporcional")),
+                "valor_frete_item": _para_decimal(record.get("valor_frete_item")),
                 "valor_total_bruto": valor_bruto,
                 "valor_total_liquido": valor_liquido,
             },
@@ -299,11 +299,11 @@ def _insert_movimentacoes(conn, source_file: str, records: List[Dict[str, Any]])
     return loaded
 
 
-# Purpose: Carrega produtos no bronze e faz upsert na dimensao silver.
-def _insert_produtos(conn, source_file: str, records: List[Dict[str, Any]]) -> int:
+# Finalidade: Carrega produtos no bronze e faz upsert na dimensao silver.
+def _carregar_produtos(conn, source_file: str, records: List[Dict[str, Any]]) -> int:
     loaded = 0
     for idx, record in enumerate(records, start=1):
-        record_hash = _hash_record(record)
+        record_hash = _gerar_hash_registro(record)
 
         conn.execute(
             text(
@@ -373,9 +373,9 @@ def _insert_produtos(conn, source_file: str, records: List[Dict[str, Any]]) -> i
                 "cd_produto_servico": str(record.get("cd_produto_servico") or "") or None,
                 "descricao": str(record.get("descricao") or "") or None,
                 "status_produto_servico": str(record.get("status_produto_servico") or "") or None,
-                "pesavel": _to_bool(record.get("pesavel")),
-                "vendavel": _to_bool(record.get("vendavel")),
-                "percentual_cashback": _to_decimal(record.get("percentual_cashback")),
+                "pesavel": _para_booleano(record.get("pesavel")),
+                "vendavel": _para_booleano(record.get("vendavel")),
+                "percentual_cashback": _para_decimal(record.get("percentual_cashback")),
                 "unidade_sigla": str(record.get("unidade_sigla") or "") or None,
                 "tipo_item_descricao": str(record.get("tipo_item_descricao") or "") or None,
                 "sub_grupo_referencia": str(record.get("sub_grupo_referencia") or "") or None,
@@ -385,9 +385,9 @@ def _insert_produtos(conn, source_file: str, records: List[Dict[str, Any]]) -> i
                 "id_empresa_referencia": str(record.get("id_empresa_referencia") or "") or None,
                 "id_estoque_referencia": str(record.get("id_estoque_referencia") or "") or None,
                 "id_preco_referencia": str(record.get("id_preco_referencia") or "") or None,
-                "margem_lucro_aplicada_referencia": _to_decimal(record.get("margem_lucro_aplicada_referencia")),
-                "limite_desconto_referencia": _to_decimal(record.get("limite_desconto_referencia")),
-                "percentual_comissao_referencia": _to_decimal(record.get("percentual_comissao_referencia")),
+                "margem_lucro_aplicada_referencia": _para_decimal(record.get("margem_lucro_aplicada_referencia")),
+                "limite_desconto_referencia": _para_decimal(record.get("limite_desconto_referencia")),
+                "percentual_comissao_referencia": _para_decimal(record.get("percentual_comissao_referencia")),
                 "source_file": source_file,
             },
         )
@@ -396,8 +396,8 @@ def _insert_produtos(conn, source_file: str, records: List[Dict[str, Any]]) -> i
     return loaded
 
 
-# Purpose: Move arquivo para pasta de destino evitando colisao de nome.
-def _move_file(file_path: Path, target_dir: Path):
+# Finalidade: Move arquivo para pasta de destino evitando colisao de nome.
+def _mover_arquivo(file_path: Path, target_dir: Path):
     target_dir.mkdir(parents=True, exist_ok=True)
     destination = target_dir / file_path.name
     if destination.exists():
@@ -406,9 +406,9 @@ def _move_file(file_path: Path, target_dir: Path):
     file_path.replace(destination)
 
 
-# Purpose: Processa um arquivo individual e controla sucesso/erro.
-def process_file(file_path: Path, engine: Engine, processed_dir: Path, failed_dir: Path) -> EtlResult:
-    file_hash = _sha256_file(file_path)
+# Finalidade: Processa um arquivo individual e controla sucesso/erro.
+def processar_arquivo(file_path: Path, engine: Engine, processed_dir: Path, failed_dir: Path) -> ResultadoEtl:
+    file_hash = _calcular_hash_arquivo(file_path)
     lower_name = file_path.name.lower()
 
     if lower_name.startswith("movimentacoes") and file_path.suffix.lower() == ".json":
@@ -416,45 +416,56 @@ def process_file(file_path: Path, engine: Engine, processed_dir: Path, failed_di
     elif lower_name.startswith("produtos_servicos") and file_path.suffix.lower() == ".csv":
         file_type = "produtos_servicos_csv"
     else:
-        return EtlResult(file_name=file_path.name, file_type="ignored", rows_loaded=0, status="IGNORED")
+        file_type = "unsupported"
+        error_message = "Padrao de nome de arquivo nao suportado. Esperado: movimentacoes*.json ou produtos_servicos*.csv."
+        with engine.begin() as conn:
+            _registrar_arquivo(conn, file_path.name, file_hash, file_type, "FAILED", 0, error_message)
+        _mover_arquivo(file_path, failed_dir)
+        return ResultadoEtl(
+            file_name=file_path.name,
+            file_type=file_type,
+            rows_loaded=0,
+            status="FAILED",
+            error_message=error_message,
+        )
 
     with engine.begin() as conn:
-        # Always reprocess file; overwrite happens by business keys in silver.
-        _register_file(conn, file_path.name, file_hash, file_type, "RUNNING", 0, "")
+        # Sempre reprocessa arquivo; sobrescrita ocorre por chave de negocio na silver.
+        _registrar_arquivo(conn, file_path.name, file_hash, file_type, "RUNNING", 0, "")
 
     try:
         if file_type == "movimentacoes_json":
-            records = parse_json_records(file_path)
+            records = ler_registros_json(file_path)
         else:
-            records = parse_csv_records(file_path)
+            records = ler_registros_csv(file_path)
 
         with engine.begin() as conn:
             if file_type == "movimentacoes_json":
-                loaded = _insert_movimentacoes(conn, file_path.name, records)
+                loaded = _carregar_movimentacoes(conn, file_path.name, records)
             else:
-                loaded = _insert_produtos(conn, file_path.name, records)
+                loaded = _carregar_produtos(conn, file_path.name, records)
 
-            _register_file(conn, file_path.name, file_hash, file_type, "SUCCESS", loaded, "")
+            _registrar_arquivo(conn, file_path.name, file_hash, file_type, "SUCCESS", loaded, "")
 
-        _move_file(file_path, processed_dir)
-        return EtlResult(file_name=file_path.name, file_type=file_type, rows_loaded=loaded, status="SUCCESS")
+        _mover_arquivo(file_path, processed_dir)
+        return ResultadoEtl(file_name=file_path.name, file_type=file_type, rows_loaded=loaded, status="SUCCESS")
 
     except Exception as exc:
         with engine.begin() as conn:
-            _register_file(conn, file_path.name, file_hash, file_type, "FAILED", 0, str(exc)[:3000])
-        _move_file(file_path, failed_dir)
-        return EtlResult(file_name=file_path.name, file_type=file_type, rows_loaded=0, status="FAILED", error_message=str(exc))
+            _registrar_arquivo(conn, file_path.name, file_hash, file_type, "FAILED", 0, str(exc)[:3000])
+        _mover_arquivo(file_path, failed_dir)
+        return ResultadoEtl(file_name=file_path.name, file_type=file_type, rows_loaded=0, status="FAILED", error_message=str(exc))
 
 
-# Purpose: Processa todos os arquivos disponiveis no diretorio de entrada.
-def process_directory(
+# Finalidade: Processa todos os arquivos disponiveis no diretorio de entrada.
+def processar_diretorio(
     input_dir: str | Path,
     processed_dir: str | Path,
     failed_dir: str | Path,
     engine: Engine | None = None,
-) -> List[EtlResult]:
-    """Processes all files currently available in the input directory."""
-    engine = engine or get_engine()
+) -> List[ResultadoEtl]:
+    """Processa todos os arquivos disponiveis no diretorio de entrada."""
+    engine = engine or obter_engine()
     input_path = Path(input_dir)
     processed_path = Path(processed_dir)
     failed_path = Path(failed_dir)
@@ -464,39 +475,39 @@ def process_directory(
     failed_path.mkdir(parents=True, exist_ok=True)
 
     files = sorted([p for p in input_path.iterdir() if p.is_file()])
-    results: List[EtlResult] = []
+    results: List[ResultadoEtl] = []
 
     for file_path in files:
-        results.append(process_file(file_path, engine, processed_path, failed_path))
+        results.append(processar_arquivo(file_path, engine, processed_path, failed_path))
 
     return results
 
 
-# Purpose: Executa um ciclo unico de ETL.
-def run_once(
+# Finalidade: Executa um ciclo unico de ETL.
+def executar_uma_vez(
     input_dir: str | Path | None = None,
     processed_dir: str | Path | None = None,
     failed_dir: str | Path | None = None,
-) -> List[EtlResult]:
-    """Executes one ETL cycle using configured input/output directories."""
-    return process_directory(
-        input_dir=input_dir or _env("INPUT_DIR", "./data/pending"),
-        processed_dir=processed_dir or _env("PROCESSED_DIR", "./data/processed"),
-        failed_dir=failed_dir or _env("FAILED_DIR", "./data/failed"),
-        engine=get_engine(),
+) -> List[ResultadoEtl]:
+    """Executa um ciclo unico de ETL usando os diretorios configurados."""
+    return processar_diretorio(
+        input_dir=input_dir or _ler_variavel_ambiente("INPUT_DIR", "./data/pending"),
+        processed_dir=processed_dir or _ler_variavel_ambiente("PROCESSED_DIR", "./data/processed"),
+        failed_dir=failed_dir or _ler_variavel_ambiente("FAILED_DIR", "./data/failed"),
+        engine=obter_engine(),
     )
 
 
-# Purpose: Executa ETL continuo com intervalo entre ciclos.
-def run_loop(
+# Finalidade: Executa ETL continuo com intervalo entre ciclos.
+def executar_em_loop(
     sleep_seconds: int = 30,
     input_dir: str | Path | None = None,
     processed_dir: str | Path | None = None,
     failed_dir: str | Path | None = None,
 ):
-    """Runs ETL continuously, waiting between each cycle."""
+    """Executa ETL continuamente, aguardando entre os ciclos."""
     while True:
-        results = run_once(input_dir=input_dir, processed_dir=processed_dir, failed_dir=failed_dir)
+        results = executar_uma_vez(input_dir=input_dir, processed_dir=processed_dir, failed_dir=failed_dir)
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"[{timestamp}] arquivos avaliados: {len(results)}")
         for result in results:
@@ -505,4 +516,4 @@ def run_loop(
 
 
 if __name__ == "__main__":
-    run_once()
+    executar_uma_vez()
