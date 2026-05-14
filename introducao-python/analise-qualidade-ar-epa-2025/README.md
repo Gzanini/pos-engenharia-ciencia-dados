@@ -1,8 +1,5 @@
 ﻿# Análise Exploratória da Qualidade do Ar (EPA) - New York (2025)
 
-## Disciplina
-Introdução a Python
-
 ## Objetivo
 Realizar uma análise exploratória de dados (EDA) sobre qualidade do ar da cidade de New York em 2025, utilizando dados públicos da EPA (Daily Summary Data).
 
@@ -40,6 +37,3 @@ pip install -r requirements.txt
 ```
 
 3. Abrir o notebook no VSCode/Jupyter e executar as células em ordem.
-
-## Observação
-Este dataset (`44201`) é específico para ozônio (Ozone), por isso não há comparação entre múltiplos poluentes dentro deste mesmo arquivo.
