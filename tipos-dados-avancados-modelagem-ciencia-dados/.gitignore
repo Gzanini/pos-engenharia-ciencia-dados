@@ -1,0 +1,19 @@
+﻿.env
+
+# python cache
+__pycache__/
+*.pyc
+
+# runtime data
+/data/pending/*
+/data/processed/*
+/data/failed/*
+/data/backup/*
+/logs/*
+
+# keep folders
+!/data/pending/.gitkeep
+!/data/processed/.gitkeep
+!/data/failed/.gitkeep
+!/data/backup/.gitkeep
+!/logs/.gitkeep
