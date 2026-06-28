@@ -15,3 +15,4 @@ pre-processamento-vendas/dados/*
 !/data/backup/.gitkeep
 !/logs/.gitkeep
 .idea
+.ipynb_checkpoints
