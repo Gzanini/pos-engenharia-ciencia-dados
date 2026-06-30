@@ -5,11 +5,8 @@ __pycache__/
 *.pyc
 
 # runtime data
-/data/pending/*
-/data/processed/*
-/data/failed/*
-/data/backup/*
-/logs/*
+tipos-dados-avancados-modelagem-ciencia-dados/data/*
+pre-processamento-vendas/dados/*
 
 # keep folders
 !/data/pending/.gitkeep
@@ -17,3 +14,5 @@ __pycache__/
 !/data/failed/.gitkeep
 !/data/backup/.gitkeep
 !/logs/.gitkeep
+.idea
+.ipynb_checkpoints
