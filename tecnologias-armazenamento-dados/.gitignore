@@ -1,0 +1,16 @@
+.env
+logs/*
+!logs/.gitkeep
+data/input/*
+!data/input/anp/
+!data/input/populacao/
+!data/input/pib/
+!data/input/ipca/
+!data/input/anp/.gitkeep
+!data/input/populacao/.gitkeep
+!data/input/pib/.gitkeep
+!data/input/ipca/.gitkeep
+__pycache__/
+*.pyc
+.pytest_cache/
+

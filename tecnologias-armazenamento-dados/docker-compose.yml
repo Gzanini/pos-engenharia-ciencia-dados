@@ -1,0 +1,87 @@
+x-airflow-common: &airflow-common
+  build:
+    context: .
+  environment: &airflow-environment
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "true"
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__WEBSERVER__EXPOSE_CONFIG: "true"
+    AIRFLOW_VAR_INSIGHTFUEL_INPUT_ROOT: /opt/airflow/input
+    AIRFLOW_VAR_INSIGHTFUEL_GCP_PROJECT_ID: ${GCP_PROJECT_ID}
+    AIRFLOW_VAR_INSIGHTFUEL_GCS_BUCKET: ${GCS_BUCKET}
+    AIRFLOW_VAR_INSIGHTFUEL_GCP_LOCATION: ${GCP_LOCATION:-southamerica-east1}
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_SILVER_DATASET: insightfuel_silver
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_GOLD_DATASET: insightfuel_gold
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_CONTROL_DATASET: insightfuel_control
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_SILVER_TABLE: silver_precos_anp
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_POPULATION_TABLE: silver_populacao_ibge
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_PIB_TABLE: silver_pib_municipios_ibge
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_IPCA_TABLE: silver_ipca_ibge
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_GOLD_TABLE: gold_precos_combustiveis_mensal
+    AIRFLOW_VAR_INSIGHTFUEL_BQ_CONTROL_TABLE: ingestion_events
+    AIRFLOW_VAR_INSIGHTFUEL_BRONZE_ROOT: bronze
+    AIRFLOW_VAR_INSIGHTFUEL_GOOGLE_CREDENTIALS_PATH: /opt/airflow/secrets/application_default_credentials.json
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/secrets/application_default_credentials.json
+    GOOGLE_CLOUD_PROJECT: ${GCP_PROJECT_ID}
+  volumes:
+    - ./dags:/opt/airflow/dags
+    - ./data/input:/opt/airflow/input
+    - ./logs:/opt/airflow/logs
+    - ${GCP_ADC_PATH}:/opt/airflow/secrets/application_default_credentials.json:ro
+  user: "${AIRFLOW_UID:-50000}:0"
+  depends_on:
+    postgres:
+      condition: service_healthy
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  airflow-init:
+    <<: *airflow-common
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db migrate &&
+        airflow users create \
+          --username "${AIRFLOW_ADMIN_USER:-admin}" \
+          --password "${AIRFLOW_ADMIN_PASSWORD:-admin}" \
+          --firstname InsightFuel \
+          --lastname Admin \
+          --role Admin \
+          --email admin@localhost || true
+    restart: "no"
+
+  airflow-webserver:
+    <<: *airflow-common
+    command: webserver
+    ports:
+      - "127.0.0.1:8081:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 12
+    restart: unless-stopped
+
+  airflow-scheduler:
+    <<: *airflow-common
+    command: scheduler
+    restart: unless-stopped
+
+volumes:
+  postgres-db-volume:
+

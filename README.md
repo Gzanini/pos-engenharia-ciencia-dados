@@ -22,6 +22,11 @@ Repositorio para centralizar projetos, atividades e entregas da pos-graduacao, o
 - Pasta: `tipos-dados-avancados-modelagem-ciencia-dados`
 - README detalhado: [tipos-dados-avancados-modelagem-ciencia-dados/README.md](tipos-dados-avancados-modelagem-ciencia-dados/README.md)
 
+### Tecnologias de Armazenamento de Dados para Ciencia de Dados
+- Projeto: InsightFuel - pipeline com Airflow, Google Cloud Storage e BigQuery
+- Pasta: `tecnologias-armazenamento-dados`
+- README detalhado: [tecnologias-armazenamento-dados/README.md](tecnologias-armazenamento-dados/README.md)
+
 ## Padrao adotado para novos projetos
 Para cada novo trabalho/disciplina:
 - criar uma pasta propria

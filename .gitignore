@@ -7,6 +7,8 @@ __pycache__/
 # runtime data
 tipos-dados-avancados-modelagem-ciencia-dados/data/*
 pre-processamento-vendas/dados/*
+tecnologias-armazenamento-dados/data/input/*
+tecnologias-armazenamento-dados/logs/*
 
 # keep folders
 !/data/pending/.gitkeep
@@ -14,5 +16,15 @@ pre-processamento-vendas/dados/*
 !/data/failed/.gitkeep
 !/data/backup/.gitkeep
 !/logs/.gitkeep
+!tecnologias-armazenamento-dados/data/input/anp/
+!tecnologias-armazenamento-dados/data/input/populacao/
+!tecnologias-armazenamento-dados/data/input/pib/
+!tecnologias-armazenamento-dados/data/input/ipca/
+!tecnologias-armazenamento-dados/data/input/anp/.gitkeep
+!tecnologias-armazenamento-dados/data/input/populacao/.gitkeep
+!tecnologias-armazenamento-dados/data/input/pib/.gitkeep
+!tecnologias-armazenamento-dados/data/input/ipca/.gitkeep
+!tecnologias-armazenamento-dados/logs/.gitkeep
 .idea
 .ipynb_checkpoints
+tmp/
