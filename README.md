@@ -27,6 +27,11 @@ Repositorio para centralizar projetos, atividades e entregas da pos-graduacao, o
 - Pasta: `tecnologias-armazenamento-dados`
 - README detalhado: [tecnologias-armazenamento-dados/README.md](tecnologias-armazenamento-dados/README.md)
 
+### Seguranca e Privacidade de Dados
+- Projeto: Analise de seguranca e privacidade em cenarios de Data Lakehouse e concessao de credito
+- Pasta: `seguranca-privacidade-dados`
+- README detalhado: [seguranca-privacidade-dados/README.md](seguranca-privacidade-dados/README.md)
+
 ## Padrao adotado para novos projetos
 Para cada novo trabalho/disciplina:
 - criar uma pasta propria
