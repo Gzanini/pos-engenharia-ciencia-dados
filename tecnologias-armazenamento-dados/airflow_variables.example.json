@@ -1,0 +1,18 @@
+{
+  "insightfuel_input_root": "/opt/airflow/input",
+  "insightfuel_gcp_project_id": "insightfuel-gzanini-2026",
+  "insightfuel_gcs_bucket": "insightfuel-gzanini-2026-bronze",
+  "insightfuel_gcp_location": "southamerica-east1",
+  "insightfuel_bq_silver_dataset": "insightfuel_silver",
+  "insightfuel_bq_gold_dataset": "insightfuel_gold",
+  "insightfuel_bq_control_dataset": "insightfuel_control",
+  "insightfuel_bq_silver_table": "silver_precos_anp",
+  "insightfuel_bq_population_table": "silver_populacao_ibge",
+  "insightfuel_bq_pib_table": "silver_pib_municipios_ibge",
+  "insightfuel_bq_ipca_table": "silver_ipca_ibge",
+  "insightfuel_bq_gold_table": "gold_precos_combustiveis_mensal",
+  "insightfuel_bq_control_table": "ingestion_events",
+  "insightfuel_bronze_root": "bronze",
+  "insightfuel_google_credentials_path": "/opt/airflow/secrets/application_default_credentials.json"
+}
+
