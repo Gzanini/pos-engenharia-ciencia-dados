@@ -55,14 +55,10 @@ classificacao-eurosat/
   results/
   models/
   scripts/
-    build_notebook.py
     docker_notebook.ps1
-    enrich_notebook.py
 ```
 
 Os arquivos em `figures/`, `results/` e `models/` sao gerados pelo notebook. Modelos treinados nao sao versionados por serem artefatos reproduziveis e potencialmente grandes.
-
-O script `scripts/enrich_notebook.py` incorpora as figuras geradas e a discussão final no próprio `.ipynb`. Ele deve ser executado somente depois da execução completa dos experimentos.
 
 ## Execucao alternativa no Google Colab
 
