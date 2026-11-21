@@ -32,6 +32,11 @@ Repositorio para centralizar projetos, atividades e entregas da pos-graduacao, o
 - Pasta: `seguranca-privacidade-dados`
 - README detalhado: [seguranca-privacidade-dados/README.md](seguranca-privacidade-dados/README.md)
 
+### Data Challenge
+- Projeto: Recomendacao de cultivo inteligente com dados tabulares de solo e microclima
+- Pasta: `data-challenge-cultivo-inteligente`
+- README detalhado: [data-challenge-cultivo-inteligente/README.md](data-challenge-cultivo-inteligente/README.md)
+
 ## Padrao adotado para novos projetos
 Para cada novo trabalho/disciplina:
 - criar uma pasta propria
