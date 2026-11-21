@@ -1,4 +1,6 @@
 ﻿.env
+.venv/
+.ipynb_checkpoints/
 
 # python cache
 __pycache__/
@@ -7,6 +9,7 @@ __pycache__/
 # runtime data
 tipos-dados-avancados-modelagem-ciencia-dados/data/*
 pre-processamento-vendas/dados/*
+deep-learning/classificacao-eurosat/dados/*
 tecnologias-armazenamento-dados/data/input/*
 tecnologias-armazenamento-dados/logs/*
 
@@ -25,6 +28,10 @@ tecnologias-armazenamento-dados/logs/*
 !tecnologias-armazenamento-dados/data/input/pib/.gitkeep
 !tecnologias-armazenamento-dados/data/input/ipca/.gitkeep
 !tecnologias-armazenamento-dados/logs/.gitkeep
+deep-learning/classificacao-eurosat/models/*.keras
+deep-learning/classificacao-eurosat/models/*.h5
+deep-learning/classificacao-eurosat/models/*.weights.h5
+deep-learning/classificacao-eurosat/models/*.tflite
 .idea
 .ipynb_checkpoints
 tmp/

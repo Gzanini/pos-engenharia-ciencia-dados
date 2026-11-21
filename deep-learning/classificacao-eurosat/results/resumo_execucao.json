@@ -1,0 +1,36 @@
+{
+  "dataset": "EuroSAT RGB",
+  "seed": 42,
+  "classes": [
+    "AnnualCrop",
+    "Forest",
+    "HerbaceousVegetation",
+    "Highway",
+    "Industrial",
+    "Pasture",
+    "PermanentCrop",
+    "Residential",
+    "River",
+    "SeaLake"
+  ],
+  "melhor_cnn_zero": "CNN-4",
+  "melhor_transfer_learning": "TL-3",
+  "melhor_modelo_geral_no_teste": "TL-3",
+  "metricas_finais": [
+    {
+      "modelo": "TL-3",
+      "test_accuracy": 0.9629629629629629,
+      "test_precision_macro": 0.9617148140461568,
+      "test_recall_macro": 0.962111111111111,
+      "test_f1_macro": 0.9618020892107026
+    },
+    {
+      "modelo": "CNN-4",
+      "test_accuracy": 0.8340740740740741,
+      "test_precision_macro": 0.8290361894500263,
+      "test_recall_macro": 0.8295777777777777,
+      "test_f1_macro": 0.8251755437712323
+    }
+  ],
+  "observacao": "O teste foi consultado apenas após a seleção pela validação. Os resultados medem generalização interna, não geográfica."
+}

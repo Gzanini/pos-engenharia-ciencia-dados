@@ -1,0 +1,33 @@
+services:
+  notebook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: eurosat-deep-learning
+    working_dir: /workspace
+    shm_size: "2gb"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/workspace
+      - eurosat_keras_cache:/root/.keras
+      # O driver NVIDIA atual no WSL precisa destes componentes para inicializar
+      # CUDA dentro do Docker Desktop (evita CUDA_ERROR_NOT_FOUND no cuInit).
+      - /usr/lib/wsl/drivers:/usr/lib/wsl/drivers:ro
+    environment:
+      TF_FORCE_GPU_ALLOW_GROWTH: "true"
+      TF_CPP_MIN_LOG_LEVEL: "1"
+      JUPYTER_ENABLE_LAB: "yes"
+    restart: unless-stopped
+
+volumes:
+  eurosat_keras_cache:
+    name: eurosat_keras_cache

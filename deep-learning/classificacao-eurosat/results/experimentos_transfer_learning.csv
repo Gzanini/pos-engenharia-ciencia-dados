@@ -1,0 +1,4 @@
+familia,experimento,descricao,camadas_filtros,ativacao,regularizacao,funcao_erro,otimizador,taxa_aprendizado,parametros_totais,parametros_treinaveis,epocas_executadas,melhor_val_loss,melhor_val_accuracy,val_f1_macro,tempo_segundos
+Transfer learning,TL-3,Fine-tuning das 30 últimas camadas após TL-1,ResNet50,herdada,Configuração herdada + fine-tuning,Sparse CE,Adam,1e-05,23851274,14692234,6,0.12900474667549133,0.9595061540603638,0.9570165760670489,164.8
+Transfer learning,TL-1,"ResNet50 congelada, cabeça compacta",ResNet50,relu,"Dropout 0,30",Sparse CE,Adam,0.001,23851274,263562,8,0.1581045687198639,0.9491357803344727,0.9477798812220322,183.9
+Transfer learning,TL-2,"ResNet50 congelada, cabeça maior e suavização",ResNet50,swish,"Dropout 0,50 + label smoothing",CE + label smoothing,RMSprop,0.0005,24114826,527114,8,0.6592541933059692,0.9491357803344727,0.947338145405217,183.4

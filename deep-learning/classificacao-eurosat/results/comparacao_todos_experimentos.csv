@@ -1,0 +1,8 @@
+familia,experimento,descricao,camadas_filtros,ativacao,regularizacao,funcao_erro,otimizador,taxa_aprendizado,parametros_totais,parametros_treinaveis,epocas_executadas,melhor_val_loss,melhor_val_accuracy,val_f1_macro,tempo_segundos
+Transfer learning,TL-3,Fine-tuning das 30 últimas camadas após TL-1,ResNet50,herdada,Configuração herdada + fine-tuning,Sparse CE,Adam,1e-05,23851274,14692234,6,0.12900474667549133,0.9595061540603638,0.9570165760670489,164.8
+Transfer learning,TL-1,"ResNet50 congelada, cabeça compacta",ResNet50,relu,"Dropout 0,30",Sparse CE,Adam,0.001,23851274,263562,8,0.1581045687198639,0.9491357803344727,0.9477798812220322,183.9
+Transfer learning,TL-2,"ResNet50 congelada, cabeça maior e suavização",ResNet50,swish,"Dropout 0,50 + label smoothing",CE + label smoothing,RMSprop,0.0005,24114826,527114,8,0.6592541933059692,0.9491357803344727,0.947338145405217,183.4
+CNN do zero,CNN-4,Rede compacta treinada com SGD,"[32, 64, 96]",relu,"BatchNorm + L2 5e-5 + Dropout 0,35",Sparse CE,SGD,0.01,89066,88682,12,0.5014786124229431,0.8348147869110107,0.8267960801643215,67.8
+CNN do zero,CNN-2,"Mais profunda, BatchNorm e L2","[32, 64, 128, 256]",relu,"BatchNorm + L2 1e-4 + Dropout 0,40",Sparse CE,RMSprop,0.0005,441130,440170,8,0.5784685611724854,0.8150617480278015,0.808161076295413,54.2
+CNN do zero,CNN-1,Baseline com três blocos,"[32, 64, 128]",relu,"Dropout 0,30",Sparse CE,Adam,0.001,111050,111050,12,0.7725222110748291,0.7192592620849609,0.7060681628636708,48.4
+CNN do zero,CNN-3,"ELU, BatchNorm e label smoothing","[32, 64, 128]",elu,"BatchNorm + L2 1e-4 + Dropout 0,50",CE + label smoothing,Adam,0.0005,129514,129066,8,1.2490144968032837,0.7046913504600525,0.6914081298752343,54.9
