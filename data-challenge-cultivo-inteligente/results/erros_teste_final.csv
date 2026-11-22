@@ -1,0 +1,8 @@
+real,predicted,quantity
+kidneybeans,chickpea,3
+pomegranate,coconut,2
+jute,rice,2
+chickpea,kidneybeans,1
+rice,jute,1
+cotton,watermelon,1
+pigeonpeas,blackgram,1
