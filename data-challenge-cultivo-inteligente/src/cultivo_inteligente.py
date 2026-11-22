@@ -1,7 +1,7 @@
-"""Funcoes reutilizaveis do projeto de recomendacao de cultivo.
+"""Funções reutilizáveis do projeto de recomendação de cultivo.
 
-O modulo concentra aquisicao, validacao, modelagem e inferencia para que o
-notebook final permaneça legivel e reproduzivel.
+O módulo concentra aquisição, validação, modelagem e inferência para que o
+notebook final permaneça legível e reproduzível.
 """
 
 from __future__ import annotations
@@ -51,7 +51,7 @@ def load_crop_data(
     dataset_id: str = DATASET_ID,
     timeout: int = 30,
 ) -> tuple[pd.DataFrame, dict[str, Any]]:
-    """Carrega o CSV publicado no Hugging Face, com contingencia local."""
+    """Carrega o CSV publicado no Hugging Face, com contingência local."""
 
     project_root = Path(project_root).resolve()
     fallback = project_root / "data" / "crop_recommendation.csv"
@@ -66,7 +66,7 @@ def load_crop_data(
             if item.get("rfilename", "").lower().endswith(".csv")
         ]
         if not csv_files:
-            raise RuntimeError("A API nao informou arquivo CSV no dataset.")
+            raise RuntimeError("A API não informou arquivo CSV no dataset.")
 
         preferred = [name for name in csv_files if "crop_recommendation" in name.lower()]
         selected_file = (preferred or csv_files)[0]
@@ -77,11 +77,11 @@ def load_crop_data(
     except Exception as error:
         if not fallback.exists():
             raise RuntimeError(
-                "Falha ao acessar o Hugging Face e nao existe CSV local de contingencia."
+                "Falha ao acessar o Hugging Face e não existe CSV local de contingência."
             ) from error
         selected_file = fallback.name
         source = str(fallback)
-        source_type = "arquivo local de contingencia"
+        source_type = "arquivo local de contingência"
         dataset_info = {}
         frame = pd.read_csv(fallback)
 
@@ -90,19 +90,19 @@ def load_crop_data(
         "arquivo": selected_file,
         "fonte_utilizada": source,
         "tipo_fonte": source_type,
-        "revisao_api": dataset_info.get("sha", "nao informada"),
-        "ultima_modificacao_api": dataset_info.get("lastModified", "nao informada"),
+        "revisao_api": dataset_info.get("sha", "não informada"),
+        "ultima_modificacao_api": dataset_info.get("lastModified", "não informada"),
     }
     return frame, provenance
 
 
 def validate_crop_data(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Valida esquema, tipos e qualidade basica; devolve copia normalizada."""
+    """Valida esquema, tipos e qualidade básica; devolve cópia normalizada."""
 
     expected = FEATURES + [TARGET]
     missing = [column for column in expected if column not in frame.columns]
     if missing:
-        raise ValueError(f"Colunas obrigatorias ausentes: {missing}")
+        raise ValueError(f"Colunas obrigatórias ausentes: {missing}")
 
     clean = frame.loc[:, expected].copy()
     for column in FEATURES:
@@ -110,9 +110,9 @@ def validate_crop_data(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]
     clean[TARGET] = clean[TARGET].astype(str).str.strip()
 
     if clean[TARGET].eq("").any():
-        raise ValueError("Foram encontrados rotulos vazios.")
+        raise ValueError("Foram encontrados rótulos vazios.")
     if clean.isna().any().any():
-        raise ValueError("A base contem valores ausentes apos a validacao.")
+        raise ValueError("A base contém valores ausentes após a validação.")
 
     class_counts = clean[TARGET].value_counts()
     diagnostics = pd.DataFrame(
@@ -143,11 +143,11 @@ def validate_crop_data(frame: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame]
 
 
 def build_candidate_models(seed: int = RANDOM_STATE) -> dict[str, Any]:
-    """Constroi alternativas comparaveis para a classificacao multiclasse."""
+    """Constrói alternativas comparáveis para a classificação multiclasse."""
 
     return {
         "Baseline": DummyClassifier(strategy="most_frequent"),
-        "Regressao logistica": Pipeline(
+        "Regressão logística": Pipeline(
             [
                 ("padronizacao", StandardScaler()),
                 (
@@ -159,7 +159,7 @@ def build_candidate_models(seed: int = RANDOM_STATE) -> dict[str, Any]:
                 ),
             ]
         ),
-        "Arvore de decisao": DecisionTreeClassifier(
+        "Árvore de decisão": DecisionTreeClassifier(
             max_depth=10,
             min_samples_leaf=2,
             random_state=seed,
@@ -183,7 +183,7 @@ def compare_models(
     y: pd.Series,
     cv: Any,
 ) -> pd.DataFrame:
-    """Compara modelos somente no treino com as mesmas particoes de CV."""
+    """Compara modelos somente no treino com as mesmas partições de CV."""
 
     scoring = {
         "accuracy": "accuracy",
@@ -231,10 +231,10 @@ def build_tuning_search(
     seed: int = RANDOM_STATE,
     n_iter: int = 18,
 ) -> RandomizedSearchCV:
-    """Cria busca controlada para a melhor familia de ensemble."""
+    """Cria busca controlada para a melhor família de ensemble."""
 
     if family_name not in {"Random Forest", "Extra Trees"}:
-        raise ValueError("A busca final esta definida para Random Forest ou Extra Trees.")
+        raise ValueError("A busca final está definida para Random Forest ou Extra Trees.")
 
     parameters = {
         "n_estimators": [300, 500, 700, 900],
@@ -263,7 +263,7 @@ def evaluate_classifier(
     X_test: pd.DataFrame,
     y_test: pd.Series,
 ) -> tuple[dict[str, float], np.ndarray, np.ndarray]:
-    """Calcula metricas finais no teste reservado uma unica vez."""
+    """Calcula métricas finais no teste reservado uma única vez."""
 
     predictions = model.predict(X_test)
     probabilities = model.predict_proba(X_test)
@@ -293,7 +293,7 @@ def confidence_diagnostics(
     predictions: np.ndarray,
     probabilities: np.ndarray,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Resume confianca maxima e acuracia por faixa de probabilidade."""
+    """Resume confiança máxima e acurácia por faixa de probabilidade."""
 
     detail = pd.DataFrame(
         {
@@ -321,7 +321,7 @@ def confidence_diagnostics(
 
 
 def feature_ranges(X_train: pd.DataFrame) -> pd.DataFrame:
-    """Faixas observadas no treino usadas como salvaguarda de inferencia."""
+    """Faixas observadas no treino usadas como salvaguarda de inferência."""
 
     ranges = X_train[FEATURES].agg(["min", "max", "mean", "std"]).T
     ranges.index.name = "feature"
@@ -334,7 +334,7 @@ def recommend_top_k(
     ranges: pd.DataFrame,
     top_k: int = 3,
 ) -> tuple[pd.DataFrame, list[str]]:
-    """Retorna culturas mais compativeis e alertas para entradas fora da base."""
+    """Retorna culturas mais compatíveis e alertas para entradas fora da base."""
 
     if isinstance(observation, dict):
         frame = pd.DataFrame([observation])
@@ -343,10 +343,10 @@ def recommend_top_k(
 
     missing = [column for column in FEATURES if column not in frame.columns]
     if missing:
-        raise ValueError(f"Variaveis ausentes para inferencia: {missing}")
+        raise ValueError(f"Variáveis ausentes para inferência: {missing}")
     frame = frame.loc[:, FEATURES].apply(pd.to_numeric, errors="raise")
     if len(frame) != 1:
-        raise ValueError("A demonstracao operacional aceita uma observacao por chamada.")
+        raise ValueError("A demonstração operacional aceita uma observação por chamada.")
 
     warnings: list[str] = []
     for feature in FEATURES:
