@@ -1,37 +1,42 @@
-﻿.env
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+
+# Python environments, bytecode and tooling caches
 .venv/
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Python packaging artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
 .ipynb_checkpoints/
 
-# python cache
-__pycache__/
-*.pyc
+# Editors and operating systems
+.idea/
+.vscode/
+*.code-workspace
+.DS_Store
+Thumbs.db
+Desktop.ini
 
-# runtime data
-tipos-dados-avancados-modelagem-ciencia-dados/data/*
-pre-processamento-vendas/dados/*
-deep-learning/classificacao-eurosat/dados/*
-tecnologias-armazenamento-dados/data/input/*
-tecnologias-armazenamento-dados/logs/*
-
-# keep folders
-!/data/pending/.gitkeep
-!/data/processed/.gitkeep
-!/data/failed/.gitkeep
-!/data/backup/.gitkeep
-!/logs/.gitkeep
-!tecnologias-armazenamento-dados/data/input/anp/
-!tecnologias-armazenamento-dados/data/input/populacao/
-!tecnologias-armazenamento-dados/data/input/pib/
-!tecnologias-armazenamento-dados/data/input/ipca/
-!tecnologias-armazenamento-dados/data/input/anp/.gitkeep
-!tecnologias-armazenamento-dados/data/input/populacao/.gitkeep
-!tecnologias-armazenamento-dados/data/input/pib/.gitkeep
-!tecnologias-armazenamento-dados/data/input/ipca/.gitkeep
-!tecnologias-armazenamento-dados/logs/.gitkeep
-deep-learning/classificacao-eurosat/models/*.keras
-deep-learning/classificacao-eurosat/models/*.h5
-deep-learning/classificacao-eurosat/models/*.weights.h5
-deep-learning/classificacao-eurosat/models/*.tflite
-.idea
-.ipynb_checkpoints
+# Temporary files
 tmp/
+*.tmp
+*.temp
+*.swp
+*~

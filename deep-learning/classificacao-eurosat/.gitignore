@@ -1,0 +1,11 @@
+# Local datasets
+/dados/*
+!/dados/.gitkeep
+
+# Trained model artifacts
+/models/*.keras
+/models/*.h5
+/models/*.weights.h5
+/models/*.tflite
+/models/*.joblib
+!/models/.gitkeep
