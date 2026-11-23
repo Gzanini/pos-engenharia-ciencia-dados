@@ -32,6 +32,12 @@ Repositorio para centralizar projetos, atividades e entregas da pos-graduacao, o
 - Pasta: `seguranca-privacidade-dados`
 - README detalhado: [seguranca-privacidade-dados/README.md](seguranca-privacidade-dados/README.md)
 
+### Deep Learning
+- Projeto: Classificacao de uso e cobertura do solo no EuroSAT, comparando uma CNN treinada do zero com uma ResNet50 adaptada por transfer learning e fine-tuning
+- Tecnologias: TensorFlow, Keras, redes convolucionais, Docker, Linux/WSL e GPU NVIDIA RTX 3060
+- Pasta: `deep-learning/classificacao-eurosat`
+- README detalhado: [deep-learning/classificacao-eurosat/README.md](deep-learning/classificacao-eurosat/README.md)
+
 ### Data Challenge
 - Projeto: Recomendacao de cultivo inteligente com dados tabulares de solo e microclima
 - Pasta: `data-challenge-cultivo-inteligente`
