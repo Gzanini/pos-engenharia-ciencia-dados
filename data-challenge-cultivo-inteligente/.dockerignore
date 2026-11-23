@@ -1,0 +1,7 @@
+.git
+.venv
+.ipynb_checkpoints
+__pycache__
+data/
+models/*.joblib
+work/

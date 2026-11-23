@@ -1,0 +1,23 @@
+services:
+  jupyter:
+    build:
+      context: .
+    container_name: cultivo-inteligente-jupyter
+    working_dir: /workspace
+    ports:
+      - "127.0.0.1:8888:8888"
+    volumes:
+      - .:/workspace
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8888/api/status', timeout=5)"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    restart: unless-stopped

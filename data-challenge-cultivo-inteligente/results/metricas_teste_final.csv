@@ -1,0 +1,11 @@
+,resultado
+accuracy,0.975
+balanced_accuracy,0.9749999999999998
+precision_macro,0.9760938158067346
+recall_macro,0.9749999999999998
+f1_macro,0.9749587169356104
+f1_weighted,0.9749587169356104
+top3_accuracy,1.0
+log_loss,0.1796862714018894
+errors,11.0
+test_observations,440.0

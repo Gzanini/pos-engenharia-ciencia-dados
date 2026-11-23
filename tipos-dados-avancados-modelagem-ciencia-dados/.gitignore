@@ -1,0 +1,15 @@
+# Runtime datasets generated or moved by the pipeline
+/data/pending/*
+/data/processed/*
+/data/failed/*
+/data/backup/*
+
+# Preserve directory placeholders when present
+!/data/pending/.gitkeep
+!/data/processed/.gitkeep
+!/data/failed/.gitkeep
+!/data/backup/.gitkeep
+
+# Runtime logs
+/logs/*
+!/logs/.gitkeep

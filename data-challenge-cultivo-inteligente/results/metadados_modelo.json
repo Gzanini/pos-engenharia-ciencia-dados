@@ -1,0 +1,27 @@
+{
+  "dataset": "randalakab/Crop-recommendation",
+  "fonte_carregada": "https://huggingface.co/datasets/randalakab/Crop-recommendation/resolve/main/crop_recommendation.csv",
+  "modelo": "Random Forest",
+  "features": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "target": "label",
+  "random_state": 42,
+  "registros": 2200,
+  "classes": 22,
+  "metricas_teste": {
+    "modelo_selecionado": "Random Forest",
+    "acuracia": 0.9727272727272728,
+    "acuracia_balanceada": 0.9727272727272726,
+    "precisao_macro": 0.9743663135110503,
+    "recall_macro": 0.9727272727272726,
+    "f1_macro": 0.9724642290840214,
+    "f1_weighted": 0.9724642290840213
+  }
+}

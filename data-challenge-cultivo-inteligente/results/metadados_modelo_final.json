@@ -1,0 +1,55 @@
+{
+  "dataset": "randalakab/Crop-recommendation",
+  "source": {
+    "dataset": "randalakab/Crop-recommendation",
+    "arquivo": "crop_recommendation.csv",
+    "fonte_utilizada": "https://huggingface.co/datasets/randalakab/Crop-recommendation/resolve/main/crop_recommendation.csv",
+    "tipo_fonte": "Hugging Face",
+    "revisao_api": "f154ba9e2c812c86ec6e24e9bfa14803d6db9689",
+    "ultima_modificacao_api": "2026-03-18T05:15:09.000Z"
+  },
+  "features": [
+    "N",
+    "P",
+    "K",
+    "temperature",
+    "humidity",
+    "ph",
+    "rainfall"
+  ],
+  "target": "label",
+  "seed": 42,
+  "split": {
+    "train": 1760,
+    "test": 440,
+    "test_size": 0.2
+  },
+  "validation": "StratifiedKFold(n_splits=5, shuffle=True, random_state=42)",
+  "selected_family": "Extra Trees",
+  "best_parameters": {
+    "n_estimators": 900,
+    "min_samples_split": 8,
+    "min_samples_leaf": 1,
+    "max_features": 0.75,
+    "max_depth": 20,
+    "class_weight": null
+  },
+  "best_cv_f1_macro": 0.9668558148813171,
+  "test_metrics": {
+    "accuracy": 0.975,
+    "balanced_accuracy": 0.9749999999999998,
+    "precision_macro": 0.9760938158067346,
+    "recall_macro": 0.9749999999999998,
+    "f1_macro": 0.9749587169356104,
+    "f1_weighted": 0.9749587169356104,
+    "top3_accuracy": 1.0,
+    "log_loss": 0.1796862714018894,
+    "errors": 11,
+    "test_observations": 440
+  },
+  "software": {
+    "python": "3.12.16",
+    "pandas": "3.1.1",
+    "scikit_learn": "1.9.1"
+  }
+}
